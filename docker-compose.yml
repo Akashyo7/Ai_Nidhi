@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # Huginn automation platform
+  huginn:
+    image: huginn/huginn
+    container_name: anidhi-huginn
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_ADAPTER=postgresql
+      - DATABASE_HOST=huginn-db
+      - DATABASE_NAME=huginn
+      - DATABASE_USERNAME=huginn
+      - DATABASE_PASSWORD=huginn_password
+      - HUGINN_DATABASE_NAME=huginn
+      - HUGINN_DATABASE_USERNAME=huginn
+      - HUGINN_DATABASE_PASSWORD=huginn_password
+      - HUGINN_DATABASE_HOST=huginn-db
+      - HUGINN_DATABASE_PORT=5432
+      - RAILS_ENV=production
+      - SECRET_KEY_BASE=your-secret-key-base-change-this
+      - INVITATION_CODE=anidhi-invite
+    depends_on:
+      - huginn-db
+    volumes:
+      - huginn-data:/var/lib/huginn
+    restart: unless-stopped
+    networks:
+      - anidhi-network
+
+  # PostgreSQL database for Huginn
+  huginn-db:
+    image: postgres:15
+    container_name: anidhi-huginn-db
+    environment:
+      - POSTGRES_DB=huginn
+      - POSTGRES_USER=huginn
+      - POSTGRES_PASSWORD=huginn_password
+    volumes:
+      - huginn-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - anidhi-network
+
+  # Redis for caching (optional, for future use)
+  redis:
+    image: redis:7-alpine
+    container_name: anidhi-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - anidhi-network
+    command: redis-server --appendonly yes
+
+  # PostgreSQL database for ANIDHI application
+  anidhi-db:
+    image: postgres:15
+    container_name: anidhi-db
+    environment:
+      - POSTGRES_DB=anidhi
+      - POSTGRES_USER=anidhi
+      - POSTGRES_PASSWORD=anidhi_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - anidhi-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - anidhi-network
+
+volumes:
+  huginn-data:
+  huginn-db-data:
+  anidhi-db-data:
+  redis-data:
+
+networks:
+  anidhi-network:
+    driver: bridge

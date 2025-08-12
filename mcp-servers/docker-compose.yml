@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  web-search-mcp:
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      - MCP_SERVER_TYPE=web-search
+      - PORT=3001
+      - MCP_API_KEY=${MCP_API_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - LOG_LEVEL=info
+      - NODE_ENV=production
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  github-mcp:
+    build: .
+    ports:
+      - "3002:3001"
+    environment:
+      - MCP_SERVER_TYPE=github
+      - PORT=3001
+      - MCP_API_KEY=${MCP_API_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - LOG_LEVEL=info
+      - NODE_ENV=production
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  filesystem-mcp:
+    build: .
+    ports:
+      - "3003:3001"
+    environment:
+      - MCP_SERVER_TYPE=filesystem
+      - PORT=3001
+      - MCP_API_KEY=${MCP_API_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - LOG_LEVEL=info
+      - NODE_ENV=production
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data  # Mount for file operations
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  default:
+    name: mcp-network

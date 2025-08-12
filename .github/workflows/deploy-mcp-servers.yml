@@ -1,0 +1,140 @@
+name: Deploy MCP Servers
+
+on:
+  push:
+    branches: [main]
+    paths: ['mcp-servers/**']
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Deployment platform'
+        required: true
+        default: 'railway'
+        type: choice
+        options:
+        - railway
+        - render
+        - heroku
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: mcp-servers/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          cd mcp-servers
+          npm ci
+
+      - name: Build TypeScript
+        run: |
+          cd mcp-servers
+          npm run build
+
+      - name: Test Docker build
+        run: |
+          cd mcp-servers
+          docker build -t mcp-test .
+
+  deploy-railway:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event.inputs.platform == 'railway' || (github.event.inputs.platform == '' && github.ref == 'refs/heads/main')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          cd mcp-servers
+          railway login --token $RAILWAY_TOKEN
+          railway up --service web-search-mcp
+
+      - name: Test deployment
+        env:
+          MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
+          RAILWAY_URL: ${{ secrets.RAILWAY_WEB_SEARCH_URL }}
+        run: |
+          cd mcp-servers
+          ./scripts/test-deployment.sh $RAILWAY_URL $MCP_API_KEY "Railway Web Search"
+
+  deploy-render:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event.inputs.platform == 'render'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Render
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
+
+      - name: Test deployment
+        env:
+          MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
+          RENDER_URL: ${{ secrets.RENDER_WEB_SEARCH_URL }}
+        run: |
+          cd mcp-servers
+          # Wait for deployment to be ready
+          sleep 60
+          ./scripts/test-deployment.sh $RENDER_URL $MCP_API_KEY "Render Web Search"
+
+  deploy-heroku:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event.inputs.platform == 'heroku'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.14
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          usedocker: true
+          docker_build_args: |
+            NODE_ENV
+          appdir: mcp-servers
+
+      - name: Test deployment
+        env:
+          MCP_API_KEY: ${{ secrets.MCP_API_KEY }}
+          HEROKU_URL: ${{ secrets.HEROKU_WEB_SEARCH_URL }}
+        run: |
+          cd mcp-servers
+          # Wait for deployment to be ready
+          sleep 90
+          ./scripts/test-deployment.sh $HEROKU_URL $MCP_API_KEY "Heroku Web Search"
+
+  notify:
+    needs: [deploy-railway, deploy-render, deploy-heroku]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Notify deployment status
+        run: |
+          if [ "${{ needs.deploy-railway.result }}" = "success" ] || [ "${{ needs.deploy-render.result }}" = "success" ] || [ "${{ needs.deploy-heroku.result }}" = "success" ]; then
+            echo "✅ MCP Server deployment successful!"
+          else
+            echo "❌ MCP Server deployment failed!"
+            exit 1
+          fi

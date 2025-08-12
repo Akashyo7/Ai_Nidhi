@@ -1,0 +1,50 @@
+{
+  "name": "anidhi-server",
+  "version": "1.0.0",
+  "description": "ANIDHI Personal Branding Platform - Backend API",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "vector-cli": "tsx src/scripts/vectorDbCli.ts"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "dotenv": "^16.3.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.3",
+    "openai": "^4.20.1",
+    "commander": "^11.1.0",
+    "redis": "^4.6.10",
+    "zod": "^3.22.4",
+    "winston": "^3.11.0",
+    "express-rate-limit": "^7.1.5",
+    "compression": "^1.7.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/pg": "^8.10.9",
+
+    "@types/compression": "^1.7.5",
+    "@types/node": "^20.10.4",
+    "@types/jest": "^29.5.8",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
+    "eslint": "^8.54.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.2"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "uvx",
+      "args": ["github-mcp-server"],
+      "env": {
+        "GITHUB_TOKEN": "your-github-token",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": ["list_repositories", "get_repository", "get_file_contents"]
+    },
+    "filesystem": {
+      "command": "uvx",
+      "args": ["filesystem-mcp-server"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": ["read_file", "list_directory"]
+    },
+    "web-search": {
+      "command": "uvx",
+      "args": ["web-search-mcp-server"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "disabled": false,
+      "autoApprove": ["search"]
+    }
+  }
+}

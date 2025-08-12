@@ -1,0 +1,72 @@
+# Render.com deployment configuration for ANIDHI MCP Servers
+services:
+  # Web Search MCP Server
+  - type: web
+    name: anidhi-mcp-web-search
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    branch: main
+    healthCheckPath: /health
+    envVars:
+      - key: MCP_SERVER_TYPE
+        value: web-search
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: LOG_LEVEL
+        value: info
+      - key: MCP_API_KEY
+        sync: false  # Set manually in Render dashboard
+      - key: JWT_SECRET
+        sync: false  # Set manually in Render dashboard
+
+  # GitHub MCP Server (when implemented)
+  # - type: web
+  #   name: anidhi-mcp-github
+  #   env: docker
+  #   dockerfilePath: ./Dockerfile
+  #   plan: free
+  #   region: oregon
+  #   branch: main
+  #   healthCheckPath: /health
+  #   envVars:
+  #     - key: MCP_SERVER_TYPE
+  #       value: github
+  #     - key: PORT
+  #       value: 10000
+  #     - key: NODE_ENV
+  #       value: production
+  #     - key: LOG_LEVEL
+  #       value: info
+  #     - key: MCP_API_KEY
+  #       sync: false
+  #     - key: JWT_SECRET
+  #       sync: false
+  #     - key: GITHUB_TOKEN
+  #       sync: false
+
+  # Filesystem MCP Server (when implemented)
+  # - type: web
+  #   name: anidhi-mcp-filesystem
+  #   env: docker
+  #   dockerfilePath: ./Dockerfile
+  #   plan: free
+  #   region: oregon
+  #   branch: main
+  #   healthCheckPath: /health
+  #   envVars:
+  #     - key: MCP_SERVER_TYPE
+  #       value: filesystem
+  #     - key: PORT
+  #       value: 10000
+  #     - key: NODE_ENV
+  #       value: production
+  #     - key: LOG_LEVEL
+  #       value: info
+  #     - key: MCP_API_KEY
+  #       sync: false
+  #     - key: JWT_SECRET
+  #       sync: false
