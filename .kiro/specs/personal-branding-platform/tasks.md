@@ -80,9 +80,9 @@
     - Create Docker containers for each MCP server
     - _Requirements: 8.1, 8.4_
 
-  - [x] 6.2 Deploy MCP servers to cloud platforms
-    - Deploy Web Search MCP server to Railway/Render
-    - Deploy GitHub MCP server to cloud platform
+  - [ ] 6.2 Deploy MCP servers to cloud platforms
+    - Deploy Web Search MCP server to Render.com (FREE tier)
+    - Deploy GitHub MCP server to Render.com
     - Deploy Filesystem MCP server with cloud storage integration
     - Configure environment variables and API keys securely
     - Set up custom domains and SSL certificates

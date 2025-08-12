@@ -4,23 +4,24 @@ This guide covers deploying ANIDHI MCP servers to various cloud platforms.
 
 ## 🎯 **Deployment Options**
 
-### 1. Railway.app (Recommended)
-- ✅ **Free tier**: 500 hours/month
-- ✅ **Easy deployment**: Git-based deployment
-- ✅ **Auto-scaling**: Built-in scaling
+### 1. Render.com (Recommended - FREE)
+- ✅ **Free tier**: 512 MB RAM, sleeps after 15min inactivity
+- ✅ **Easy deployment**: Git-based deployment with Docker support
+- ✅ **Auto-scaling**: Built-in scaling capabilities
 - ✅ **Custom domains**: Free SSL certificates
+- ✅ **PostgreSQL**: Free 256 MB database (30-day renewable)
 
-### 2. Render.com (Alternative)
+### 2. Railway.app (Paid Only)
 - ✅ **Free tier**: 750 hours/month
 - ✅ **Docker support**: Native Docker deployment
 - ✅ **Auto-deploy**: GitHub integration
 - ✅ **Health checks**: Built-in monitoring
 
-### 3. Heroku (Fallback)
+### 3. Heroku (Paid Only - No Free Tier)
 - ✅ **Established platform**: Mature ecosystem
 - ✅ **Container support**: Docker deployment
 - ✅ **Add-ons**: Rich ecosystem
-- ⚠️ **Limited free tier**: 550 hours/month
+- ❌ **No free tier**: Minimum $7/month (discontinued free tier in Nov 2022)
 
 ## 🚀 **Quick Deployment**
 

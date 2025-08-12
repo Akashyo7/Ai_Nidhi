@@ -117,3 +117,6 @@ temp/
 # Vector database
 vector-db/
 embeddings/
+
+# Render deployment keys (never commit)
+.env.render
