@@ -1,0 +1,73 @@
+# Render.com deployment configuration for Huginn
+services:
+  # Huginn Web Application
+  - type: web
+    name: anidhi-huginn
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    branch: main
+    rootDir: huginn
+    healthCheckPath: /health
+    buildCommand: ""
+    startCommand: ""
+    envVars:
+      # Rails Configuration
+      - key: RAILS_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: RAILS_SERVE_STATIC_FILES
+        value: true
+      - key: RAILS_LOG_TO_STDOUT
+        value: true
+      
+      # Database Configuration (PostgreSQL)
+      - key: HUGINN_DATABASE_ADAPTER
+        value: postgresql
+      - key: DATABASE_URL
+        sync: false  # Will be set to Render PostgreSQL URL
+      
+      # Huginn Configuration
+      - key: HUGINN_DOMAIN
+        value: anidhi-huginn.onrender.com
+      - key: HUGINN_USE_GRAPHICAL_DIAGRAM
+        value: true
+      - key: HUGINN_ENABLE_INSECURE_AGENTS
+        value: false
+      
+      # Security Configuration
+      - key: SECRET_KEY_BASE
+        sync: false  # Generate secure key
+      - key: HUGINN_INVITATION_CODE
+        sync: false  # Set invitation code for registration
+      
+      # Email Configuration (optional)
+      - key: SMTP_DOMAIN
+        value: anidhi-huginn.onrender.com
+      - key: SMTP_USER_NAME
+        sync: false  # Set if using SMTP
+      - key: SMTP_PASSWORD
+        sync: false  # Set if using SMTP
+      - key: SMTP_SERVER
+        sync: false  # Set if using SMTP
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_AUTHENTICATION
+        value: plain
+      - key: SMTP_ENABLE_STARTTLS_AUTO
+        value: true
+      
+      # MCP Integration
+      - key: MCP_WEB_SEARCH_URL
+        value: https://anidhi-mcp-web-search.onrender.com
+      - key: MCP_API_KEY
+        sync: false  # Use same key as MCP server
+
+# PostgreSQL Database
+databases:
+  - name: anidhi-huginn-db
+    databaseName: huginn_production
+    user: huginn
+    plan: free

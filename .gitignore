@@ -120,3 +120,4 @@ embeddings/
 
 # Render deployment keys (never commit)
 .env.render
+huginn/.env.render
