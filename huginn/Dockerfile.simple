@@ -1,0 +1,12 @@
+# Ultra-simple Huginn Dockerfile for testing
+FROM huginn/huginn:latest
+
+# Just set the port and let Huginn handle everything else
+ENV PORT=10000
+
+# Create minimal .env file
+RUN echo "PORT=10000" > /app/.env
+
+EXPOSE 10000
+
+CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "10000"]
