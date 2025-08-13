@@ -9,7 +9,7 @@ services:
     region: oregon
     branch: main
     rootDir: huginn
-    healthCheckPath: /health
+    healthCheckPath: /
     buildCommand: ""
     startCommand: ""
     envVars:
