@@ -10,6 +10,10 @@ ENV PORT=10000
 ENV HUGINN_PORT=10000
 ENV IP=0.0.0.0
 
+# Ensure Huginn binds to the correct port for Render.com
+# Override any default port settings
+ENV UNICORN_PORT=10000
+
 # Set database configuration environment variables
 # These will be processed by Huginn's setup_env script
 ENV HUGINN_DATABASE_HOST=
@@ -29,6 +33,9 @@ ENV HUGINN_ENABLE_INSECURE_AGENTS=false
 # Expose port for Render.com
 EXPOSE 10000
 
-# Use Huginn's standard initialization process
-# This will run setup_env and properly configure everything
-CMD ["/scripts/init"]
+# Create a wrapper script to ensure proper port binding
+COPY start-huginn.sh /scripts/start-huginn.sh
+RUN chmod +x /scripts/start-huginn.sh
+
+# Use our wrapper script that ensures proper port configuration
+CMD ["/scripts/start-huginn.sh"]
