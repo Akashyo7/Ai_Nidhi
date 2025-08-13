@@ -27,11 +27,13 @@ services:
       - key: RAILS_LOG_TO_STDOUT
         value: true
       
-      # Database Configuration (PostgreSQL)
+      # Database Configuration (PostgreSQL) - CRITICAL: Must be set correctly
+      - key: DATABASE_ADAPTER
+        value: postgresql
       - key: HUGINN_DATABASE_ADAPTER
         value: postgresql
       - key: DATABASE_URL
-        sync: false  # Will be set to Render PostgreSQL URL
+        sync: false  # MUST be set to your PostgreSQL database URL from Render dashboard
       - key: HUGINN_DATABASE_HOST
         sync: false  # Will be extracted from DATABASE_URL
       - key: HUGINN_DATABASE_PORT

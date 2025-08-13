@@ -1,0 +1,66 @@
+# Docker Compose for ANIDHI Huginn Local Development
+# Test locally before deploying to Render.com
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: huginn_production
+      POSTGRES_USER: huginn
+      POSTGRES_PASSWORD: huginn_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U huginn"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Huginn Application
+  huginn:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      # Database Configuration
+      DATABASE_ADAPTER: postgresql
+      DATABASE_URL: postgresql://huginn:huginn_password@postgres:5432/huginn_production
+      
+      # Rails Configuration
+      RAILS_ENV: production
+      RAILS_LOG_TO_STDOUT: "true"
+      RAILS_SERVE_STATIC_FILES: "true"
+      
+      # Huginn Configuration
+      DOMAIN: localhost:3000
+      PORT: 3000
+      HUGINN_PORT: 3000
+      IP: 0.0.0.0
+      
+      # Security
+      APP_SECRET_TOKEN: local-development-secret-token-change-in-production
+      INVITATION_CODE: anidhi-local-dev
+      
+      # Huginn Settings
+      HUGINN_USE_GRAPHICAL_DIAGRAM: "true"
+      HUGINN_ENABLE_INSECURE_AGENTS: "false"
+      
+      # MCP Integration (for testing)
+      MCP_WEB_SEARCH_URL: https://anidhi-mcp-web-search.onrender.com
+      MCP_API_KEY: 76bbe4a5bb5e83c42f1577f6c93a1d284f49e4e471d6f98362fb8ee5cf6b8fc4
+    
+    depends_on:
+      postgres:
+        condition: service_healthy
+    
+    volumes:
+      - huginn_data:/app/tmp
+
+volumes:
+  postgres_data:
+  huginn_data:
