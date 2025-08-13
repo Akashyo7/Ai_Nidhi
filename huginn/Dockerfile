@@ -33,9 +33,20 @@ ENV HUGINN_ENABLE_INSECURE_AGENTS=false
 # Expose port for Render.com
 EXPOSE 10000
 
-# Create a wrapper script to ensure proper port binding
-COPY start-huginn.sh /scripts/start-huginn.sh
-RUN chmod +x /scripts/start-huginn.sh
+# Create a simple wrapper script inline to ensure proper port binding
+RUN echo '#!/bin/bash\n\
+set -e\n\
+echo "🤖 Starting Huginn for ANIDHI Personal Branding Platform..."\n\
+export PORT=${PORT:-10000}\n\
+export HUGINN_PORT=${PORT}\n\
+export IP=0.0.0.0\n\
+echo "📍 Binding to ${IP}:${PORT}"\n\
+if [ -z "$DATABASE_URL" ]; then\n\
+    echo "⚠️  WARNING: DATABASE_URL is not set!"\n\
+fi\n\
+echo "🚀 Running Huginn initialization..."\n\
+exec /scripts/init\n\
+' > /scripts/start-huginn.sh && chmod +x /scripts/start-huginn.sh
 
 # Use our wrapper script that ensures proper port configuration
 CMD ["/scripts/start-huginn.sh"]
