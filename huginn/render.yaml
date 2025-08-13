@@ -18,6 +18,10 @@ services:
         value: production
       - key: PORT
         value: 10000
+      - key: HUGINN_PORT
+        value: 10000
+      - key: IP
+        value: 0.0.0.0
       - key: RAILS_SERVE_STATIC_FILES
         value: true
       - key: RAILS_LOG_TO_STDOUT
@@ -28,6 +32,16 @@ services:
         value: postgresql
       - key: DATABASE_URL
         sync: false  # Will be set to Render PostgreSQL URL
+      - key: HUGINN_DATABASE_HOST
+        sync: false  # Will be extracted from DATABASE_URL
+      - key: HUGINN_DATABASE_PORT
+        value: 5432
+      - key: HUGINN_DATABASE_USERNAME
+        sync: false  # Will be extracted from DATABASE_URL
+      - key: HUGINN_DATABASE_PASSWORD
+        sync: false  # Will be extracted from DATABASE_URL
+      - key: HUGINN_DATABASE_NAME
+        sync: false  # Will be extracted from DATABASE_URL
       
       # Huginn Configuration
       - key: HUGINN_DOMAIN

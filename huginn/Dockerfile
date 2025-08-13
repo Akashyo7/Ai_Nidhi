@@ -1,22 +1,34 @@
 # Huginn Docker Configuration for ANIDHI Personal Branding Platform
-# Simplified approach - create .env file directly in Dockerfile
+# Proper configuration based on Huginn's setup_env script requirements
 
 FROM huginn/huginn:latest
 
-# Set environment variables for production
+# Set required environment variables that Huginn expects
 ENV RAILS_ENV=production
 ENV HUGINN_DATABASE_ADAPTER=postgresql
 ENV PORT=10000
+ENV HUGINN_PORT=10000
+ENV IP=0.0.0.0
 
-# Create a basic .env file that Huginn expects
-# The actual values will come from environment variables
-RUN echo "# Basic .env file for Huginn" > /app/.env && \
-    echo "RAILS_ENV=production" >> /app/.env && \
-    echo "PORT=10000" >> /app/.env && \
-    chown huginn:huginn /app/.env
+# Set database configuration environment variables
+# These will be processed by Huginn's setup_env script
+ENV HUGINN_DATABASE_HOST=
+ENV HUGINN_DATABASE_PORT=5432
+ENV HUGINN_DATABASE_USERNAME=
+ENV HUGINN_DATABASE_PASSWORD=
+ENV HUGINN_DATABASE_NAME=huginn_production
+
+# Rails configuration
+ENV RAILS_LOG_TO_STDOUT=true
+ENV RAILS_SERVE_STATIC_FILES=true
+
+# Huginn specific settings
+ENV HUGINN_USE_GRAPHVIZ_DOT=dot
+ENV HUGINN_ENABLE_INSECURE_AGENTS=false
 
 # Expose port for Render.com
 EXPOSE 10000
 
-# Use the standard Huginn startup but with environment variables
-CMD ["bin/rails", "server", "-b", "0.0.0.0", "-p", "10000"]
+# Use Huginn's standard initialization process
+# This will run setup_env and properly configure everything
+CMD ["/scripts/init"]
